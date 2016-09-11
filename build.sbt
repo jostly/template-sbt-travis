@@ -3,6 +3,30 @@ import com.typesafe.sbt.SbtGit.GitKeys._
 import sbtrelease._
 import sbtrelease.ReleaseStateTransformations.{setReleaseVersion=>_,_}
 
+lazy val publishSettings = Seq(
+  homepage := Some(url("https://github.com/jostly/template-sbt-travis")),
+  startYear := Some(2016),
+  licenses := Seq(("Unlicense", url("http://unlicense.org"))),
+  scmInfo := Some(
+    ScmInfo(
+      url("https://github.com/jostly/template-sbt-travis"),
+      "scm:git:https://github.com/jostly/template-sbt-travis.git",
+      Some("scm:git:git@github.com:jostly/template-sbt-travis.git")
+    )
+  ),
+  bintrayVcsUrl := Some("scm:git:git@github.com:jostly/template-sbt-travis.git"),
+  publishMavenStyle := true,
+  publishArtifact in Test := false,
+  pomIncludeRepository := { _ => false },
+  pomExtra := <developers>
+    <developer>
+      <id>jostly</id>
+      <name>Johan Östling</name>
+      <url>https://github.com/jostly</url>
+    </developer>
+  </developers>
+)
+
 lazy val root = (project in file(".")).
   enablePlugins(BuildInfoPlugin, GitVersioning, GitBranchPrompt).
   settings(
@@ -28,7 +52,8 @@ lazy val root = (project in file(".")).
       "-unchecked",
       "-explaintypes"
     )
-  )
+  ).
+  settings(publishSettings:_*)
 
 git.useGitDescribe := true
 git.baseVersion := "0.0.0"
@@ -74,5 +99,6 @@ releaseProcess := Seq(
   setReleaseVersion,
   runTest,
   tagRelease,
+  publishArtifacts,
   pushChanges
 )
