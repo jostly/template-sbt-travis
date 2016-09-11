@@ -17,6 +17,14 @@ only test, and not publish.
 Do `sbt "release with-defaults"` from command line, or `release with-defaults` from within sbt. This will create a tag and push to origin, which
 will trigger another build on Travis, on the newly created tag, publishing that version to bintray.
 
+## Configuration
+
+Put bintray credentials in the file `.credentials` in the project root. Encrypt it, and add decryption instructions using the
+travis command line tool:
+```bash
+travis encrypt-file .credentials --add
+```
+
 ## Credits
 
 I was greatly inspired by this blog post: http://blog.byjean.eu/2015/07/10/painless-release-with-sbt.html
