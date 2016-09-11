@@ -1,5 +1,8 @@
+before_install:
+- openssl aes-256-cbc -K $encrypted_8387b4a44f2f_key -iv $encrypted_8387b4a44f2f_iv -in .credentials.enc -out .credentials -d
 language: scala
 scala:
-  - 2.11.8
+- 2.11.8
 notifications:
   email: false
+script: "./travis.sh"

@@ -15,6 +15,7 @@ lazy val publishSettings = Seq(
     )
   ),
   bintrayVcsUrl := Some("scm:git:git@github.com:jostly/template-sbt-travis.git"),
+  bintrayCredentialsFile := file(".credentials"),
   publishMavenStyle := true,
   publishArtifact in Test := false,
   pomIncludeRepository := { _ => false },
@@ -99,6 +100,5 @@ releaseProcess := Seq(
   setReleaseVersion,
   runTest,
   tagRelease,
-  publishArtifacts,
   pushChanges
 )
