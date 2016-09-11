@@ -74,6 +74,5 @@ releaseProcess := Seq(
   setReleaseVersion,
   runTest,
   tagRelease,
-  setNextVersion,
   pushChanges
 )
