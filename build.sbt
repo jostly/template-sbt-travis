@@ -10,7 +10,7 @@ lazy val root = (project in file(".")).
     organization := "com.github.jostly",
     scalaVersion := "2.11.8",
 
-    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
+    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, gitHeadCommit),
     buildInfoPackage := "com.github.jostly.template",
 
     libraryDependencies ++= Seq(
@@ -74,7 +74,6 @@ releaseProcess := Seq(
   setReleaseVersion,
   runTest,
   tagRelease,
-  // publishArtifacts,
-  //ReleaseStep(releaseStepTask(publish in Universal)),
+  setNextVersion,
   pushChanges
 )
