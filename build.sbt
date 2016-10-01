@@ -1,33 +1,5 @@
 import com.typesafe.sbt.SbtGit.GitKeys._
 
-import sbtrelease._
-import sbtrelease.ReleaseStateTransformations.{setReleaseVersion=>_,_}
-
-lazy val publishSettings = Seq(
-  homepage := Some(url("https://github.com/jostly/template-sbt-travis")),
-  startYear := Some(2016),
-  licenses := Seq(("Unlicense", url("http://unlicense.org"))),
-  scmInfo := Some(
-    ScmInfo(
-      url("https://github.com/jostly/template-sbt-travis"),
-      "scm:git:https://github.com/jostly/template-sbt-travis.git",
-      Some("scm:git:git@github.com:jostly/template-sbt-travis.git")
-    )
-  ),
-  bintrayVcsUrl := Some("scm:git:git@github.com:jostly/template-sbt-travis.git"),
-  bintrayCredentialsFile := file(".credentials"),
-  publishMavenStyle := true,
-  publishArtifact in Test := false,
-  pomIncludeRepository := { _ => false },
-  pomExtra := <developers>
-    <developer>
-      <id>jostly</id>
-      <name>Johan Östling</name>
-      <url>https://github.com/jostly</url>
-    </developer>
-  </developers>
-)
-
 lazy val root = (project in file(".")).
   enablePlugins(BuildInfoPlugin, GitVersioning, GitBranchPrompt).
   settings(
@@ -56,49 +28,29 @@ lazy val root = (project in file(".")).
   ).
   settings(publishSettings:_*)
 
-git.useGitDescribe := true
-git.baseVersion := "0.0.0"
-val VersionRegex = "v([0-9]+.[0-9]+.[0-9]+)-?(.*)?".r
-git.gitTagToVersionNumber := {
-  case VersionRegex(v,"") => Some(v)
-  case VersionRegex(v,"SNAPSHOT") => Some(s"$v-SNAPSHOT")
-  case VersionRegex(v,s) => Some(s"$v-$s-SNAPSHOT")
-  case _ => None
-}
+lazy val githubRepo = "jostly/template-sbt-travis"
 
-// sbt release
-def setVersionOnly(selectVersion: Versions => String): ReleaseStep =  { st: State =>
-  val vs = st.get(ReleaseKeys.versions).getOrElse(sys.error("No versions are set! Was this release part executed before inquireVersions?"))
-  val selected = selectVersion(vs)
-
-  st.log.info("Setting version to '%s'." format selected)
-  val useGlobal =Project.extract(st).get(releaseUseGlobalVersion)
-  val versionStr = (if (useGlobal) globalVersionString else versionString) format selected
-
-  reapply(Seq(
-    if (useGlobal) version in ThisBuild := selected
-    else version := selected
-  ), st)
-}
-
-lazy val setReleaseVersion: ReleaseStep = setVersionOnly(_._1)
-
-releaseVersion <<= (releaseVersionBump)( bumper=>{
-  ver => Version(ver)
-    .map(_.withoutQualifier)
-    .map(_.bump(bumper).string).getOrElse(versionFormatError)
-})
-
-val showNextVersion = settingKey[String]("the future version once releaseNextVersion has been applied to it")
-val showReleaseVersion = settingKey[String]("the future version once releaseNextVersion has been applied to it")
-showReleaseVersion <<= (version, releaseVersion)((v,f)=>f(v))
-showNextVersion <<= (version, releaseNextVersion)((v,f)=>f(v))
-
-releaseProcess := Seq(
-  checkSnapshotDependencies,
-  inquireVersions,
-  setReleaseVersion,
-  runTest,
-  tagRelease,
-  pushChanges
+lazy val publishSettings = Seq(
+  homepage := Some(url(s"https://github.com/$githubRepo")),
+  startYear := Some(2016),
+  licenses := Seq(("Unlicense", url("http://unlicense.org"))),
+  scmInfo := Some(
+    ScmInfo(
+      url(s"https://github.com/$githubRepo"),
+      s"scm:git:https://github.com/$githubRepo.git",
+      Some(s"scm:git:git@github.com:$githubRepo.git")
+    )
+  ),
+  bintrayVcsUrl := Some(s"scm:git:git@github.com:$githubRepo.git"),
+  bintrayCredentialsFile := file(".credentials"),
+  publishMavenStyle := true,
+  publishArtifact in Test := false,
+  pomIncludeRepository := { _ => false },
+  pomExtra := <developers>
+    <developer>
+      <id>jostly</id>
+      <name>Johan Östling</name>
+      <url>https://github.com/jostly</url>
+    </developer>
+  </developers>
 )

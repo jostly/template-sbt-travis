@@ -14,8 +14,12 @@ only test, and not publish.
 
 ## Creating a release
 
+Release is done via [sbt-release plugin](https://github.com/sbt/sbt-release)
+
 Do `sbt "release with-defaults"` from command line, or `release with-defaults` from within sbt. This will create a tag and push to origin, which
 will trigger another build on Travis, on the newly created tag, publishing that version to bintray.
+
+Alternatively do `sbt release` to specify other values than the default for release version and next version, like bumping minor or major version.
 
 ## Configuration
 
